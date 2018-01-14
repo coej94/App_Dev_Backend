@@ -1,0 +1,38 @@
+mixin storeForm(store = {})
+    form(action=`/add/${store._id || ''}`  method="POST"
+    class="card" enctype="multipart/form-data")
+        pre #{h.dump(store)}
+        label(for="name") Name
+        input(for="text" name="name" value=store.name)
+        label(for="description") Description
+        textarea(name="description")= store.description
+        //- upload image: 
+        label(for="photo") Photo
+        input(type="file" name="photo" id="photo" accept="image/png, image/gif, image/jpeg")
+        if(store.photo)
+            img(src=`/uploads/${store.photo}` alt=store.name width=200)
+        //-upload thumbnail
+        label(for="thumbnail") thumbnail
+        input(type="file" name="thumbnail" id="thumbnail" accept="image/png, image/gif, image/jpeg")
+        if(store.thumbnail)
+            img(src=`/uploads/${store.thumbnail}` alt=store.name width=50)
+        
+
+        //- Address
+        label(for="address") Address
+        input(type="text" id="address" name="location[address]" value=(store.location && store.location.address))
+        //-Lng
+        label(for="lng") Address Lng
+        input(type="text" id="lng" name="location[coordinates][0]" value=(store.location && store.location.coordinates[0]) required)
+        //-Lat
+        label(for="lat") Address Lat
+        input(type="text" id="lat" name="location[coordinates][1]" value=(store.location && store.location.coordinates[1]) required)
+        //- Tags
+        - const choices = ['Wifi', 'Disco', 'Beer', 'Wine', 'Drinks', 'Dance']
+        - const tags = store.tags || []
+        ul.tags
+            each choice in choices
+                .tag.tag__choice
+                    input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
+                    label(for=choice) #{choice}
+        input(type="submit" value="Save →" class="button")
